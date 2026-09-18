@@ -1,773 +1,280 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payments Analytics Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <title>Payments Dashboard</title>
-
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f5f7fb;
-            color: #172033;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: auto;
-            padding: 30px;
-        }
-
-        h1 {
-            margin: 0 0 6px;
-            font-size: 28px;
-        }
-
-        .subtitle {
-            color: #687386;
-            margin-bottom: 25px;
-        }
-
-        /* Filters */
-
-        .filters {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        select {
-            padding: 10px 14px;
-            border: 1px solid #d9deea;
-            border-radius: 8px;
-            background: white;
-            font-size: 14px;
-        }
-
-        /* KPI Cards */
-
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 20px;
-        }
-
-        .card {
-            background: white;
-            border: 1px solid #e7eaf0;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(20, 30, 50, 0.04);
-        }
-
-        .label {
-            color: #718096;
-            font-size: 13px;
-        }
-
-        .value {
-            font-size: 26px;
-            font-weight: bold;
-            margin-top: 8px;
-        }
-
-        .delta {
-            font-size: 12px;
-            margin-top: 7px;
-        }
-
-        .up {
-            color: #159957;
-        }
-
-        .down {
-            color: #d64545;
-        }
-
-        /* Charts */
-
-        .grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 16px;
-            margin-bottom: 20px;
-        }
-
-        .panel {
-            background: white;
-            border: 1px solid #e7eaf0;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(20, 30, 50, 0.04);
-        }
-
-        .panel h2 {
-            font-size: 17px;
-            margin: 0 0 18px;
-        }
-
-        canvas {
-            max-height: 300px;
-        }
-
-        /* Table */
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th,
-        td {
-            padding: 12px 8px;
-            border-bottom: 1px solid #edf0f5;
-            text-align: left;
-            font-size: 14px;
-        }
-
-        th {
-            color: #718096;
-            font-weight: 600;
-        }
-
-        /* Mobile */
-
-        @media (max-width: 800px) {
-
-            .cards {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f6fa;color:#172033}
+.app{display:flex;min-height:100vh}
+.sidebar{width:220px;background:#172033;color:white;padding:24px 14px;position:fixed;top:0;bottom:0}
+.logo{font-size:19px;font-weight:700;padding:0 12px 28px}
+.logo span{display:block;color:#aeb9ca;font-size:12px;font-weight:400;margin-top:5px}
+.nav button{width:100%;border:0;background:transparent;color:#c9d2df;text-align:left;padding:12px;border-radius:8px;margin-bottom:5px;cursor:pointer;font-size:14px}
+.nav button:hover,.nav button.active{background:#2b3850;color:white}
+.main{margin-left:220px;flex:1;padding:30px;max-width:1400px}
+.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px}
+h1{margin:0 0 6px;font-size:28px}
+.subtitle{color:#687386;font-size:14px}
+.filters{display:flex;gap:10px}
+select{padding:9px 12px;border:1px solid #d9deea;border-radius:8px;background:white}
+.page{display:none}.page.active{display:block}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:18px}
+.card,.panel{background:white;border:1px solid #e6eaf0;border-radius:12px;padding:19px;box-shadow:0 2px 8px rgba(20,30,50,.04)}
+.label{color:#718096;font-size:13px}.value{font-size:25px;font-weight:700;margin-top:8px}.delta{font-size:12px;margin-top:7px}.up{color:#159957}.down{color:#d64545}
+.grid2{display:grid;grid-template-columns:2fr 1fr;gap:15px;margin-bottom:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:18px}
+.panel{margin-bottom:18px}.panel h2{font-size:17px;margin:0 0 17px}.chartbox{height:300px}
+table{width:100%;border-collapse:collapse}th,td{padding:12px 8px;border-bottom:1px solid #edf0f5;text-align:left;font-size:14px}th{color:#718096;font-weight:600}
+.badge{padding:5px 9px;border-radius:20px;background:#eef2f7;font-size:12px}
+.insight{padding:13px;border-left:3px solid #5b6f95;background:#f7f9fc;margin-bottom:10px;font-size:14px}
+@media(max-width:900px){.sidebar{width:180px}.main{margin-left:180px}.cards{grid-template-columns:repeat(2,1fr)}.grid2,.grid3{grid-template-columns:1fr}}
+@media(max-width:650px){.sidebar{position:static;width:100%;min-height:auto}.app{display:block}.main{margin-left:0}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap}.header{display:block}.filters{margin-top:15px}}
+</style>
 </head>
 
 <body>
+<div class="app">
 
-<div class="container">
+<aside class="sidebar">
+  <div class="logo">Payments Analytics<span>Sample data dashboard</span></div>
+  <div class="nav">
+    <button class="active" onclick="showPage('overview',this)">Overview</button>
+    <button onclick="showPage('performance',this)">Performance</button>
+    <button onclick="showPage('revenue',this)">Revenue</button>
+    <button onclick="showPage('transactions',this)">Transactions</button>
+  </div>
+</aside>
 
-    <h1>Payments Performance Dashboard</h1>
+<main class="main">
 
-    <div class="subtitle">
-        Sample payments analytics dashboard
-    </div>
-
-    <!-- FILTERS -->
-
-    <div class="filters">
-
-        <select id="month">
-            <option value="All">All Months</option>
-            <option value="Jan">January</option>
-            <option value="Feb">February</option>
-            <option value="Mar">March</option>
-            <option value="Apr">April</option>
-            <option value="May">May</option>
-            <option value="Jun">June</option>
-        </select>
-
-        <select id="bank">
-            <option value="All">All Banks</option>
-            <option value="Alpha Bank">Alpha Bank</option>
-            <option value="Beta Bank">Beta Bank</option>
-            <option value="Gamma Bank">Gamma Bank</option>
-        </select>
-
-    </div>
-
-
-    <!-- KPI CARDS -->
-
-    <div class="cards">
-
-        <div class="card">
-            <div class="label">
-                Transaction Volume
-            </div>
-
-            <div class="value" id="volume">
-                ₹124.6 Cr
-            </div>
-
-            <div class="delta up">
-                ▲ 8.4% vs prior period
-            </div>
-        </div>
-
-
-        <div class="card">
-            <div class="label">
-                Transactions
-            </div>
-
-            <div class="value" id="txns">
-                2.84M
-            </div>
-
-            <div class="delta up">
-                ▲ 6.1% vs prior period
-            </div>
-        </div>
-
-
-        <div class="card">
-            <div class="label">
-                Revenue
-            </div>
-
-            <div class="value" id="revenue">
-                ₹4.18 Cr
-            </div>
-
-            <div class="delta up">
-                ▲ 5.7% vs prior period
-            </div>
-        </div>
-
-
-        <div class="card">
-            <div class="label">
-                Approval Rate
-            </div>
-
-            <div class="value" id="approval">
-                91.8%
-            </div>
-
-            <div class="delta down">
-                ▼ 0.8 pp vs prior period
-            </div>
-        </div>
-
-    </div>
-
-
-    <!-- CHARTS -->
-
-    <div class="grid">
-
-        <div class="panel">
-
-            <h2>
-                Monthly Transaction Volume
-            </h2>
-
-            <canvas id="lineChart"></canvas>
-
-        </div>
-
-
-        <div class="panel">
-
-            <h2>
-                Channel Mix
-            </h2>
-
-            <canvas id="doughnutChart"></canvas>
-
-        </div>
-
-    </div>
-
-
-    <!-- BANK TABLE -->
-
-    <div class="panel">
-
-        <h2>
-            Bank Performance
-        </h2>
-
-        <table>
-
-            <thead>
-
-                <tr>
-                    <th>Bank</th>
-                    <th>Volume</th>
-                    <th>Transactions</th>
-                    <th>Revenue</th>
-                    <th>Approval Rate</th>
-                </tr>
-
-            </thead>
-
-            <tbody id="bankTable">
-            </tbody>
-
-        </table>
-
-    </div>
-
+<div class="header">
+  <div>
+    <h1 id="pageTitle">Executive Overview</h1>
+    <div class="subtitle" id="pageSubtitle">High-level view of sample payments performance</div>
+  </div>
+  <div class="filters">
+    <select id="bankFilter" onchange="renderAll()">
+      <option value="All">All Banks</option>
+      <option value="Alpha Bank">Alpha Bank</option>
+      <option value="Beta Bank">Beta Bank</option>
+      <option value="Gamma Bank">Gamma Bank</option>
+    </select>
+    <select id="monthFilter" onchange="renderAll()">
+      <option value="All">All Months</option>
+      <option value="Jan">January</option><option value="Feb">February</option>
+      <option value="Mar">March</option><option value="Apr">April</option>
+      <option value="May">May</option><option value="Jun">June</option>
+    </select>
+  </div>
 </div>
 
+<!-- OVERVIEW -->
+<section id="overview" class="page active">
+  <div class="cards">
+    <div class="card"><div class="label">Transaction Volume</div><div class="value" id="ovVolume"></div><div class="delta up">▲ 8.4% vs prior period</div></div>
+    <div class="card"><div class="label">Transactions</div><div class="value" id="ovTx"></div><div class="delta up">▲ 6.1% vs prior period</div></div>
+    <div class="card"><div class="label">Revenue</div><div class="value" id="ovRev"></div><div class="delta up">▲ 5.7% vs prior period</div></div>
+    <div class="card"><div class="label">Approval Rate</div><div class="value" id="ovApproval"></div><div class="delta down">▼ 0.8 pp vs prior period</div></div>
+  </div>
+  <div class="grid2">
+    <div class="panel"><h2>Monthly Transaction Volume</h2><div class="chartbox"><canvas id="overviewLine"></canvas></div></div>
+    <div class="panel"><h2>Channel Mix</h2><div class="chartbox"><canvas id="overviewDonut"></canvas></div></div>
+  </div>
+  <div class="panel"><h2>Quick Insights</h2>
+    <div class="insight">Alpha Bank contributes the largest share of sample transaction volume.</div>
+    <div class="insight">E-commerce represents a significant portion of the sample transaction mix.</div>
+    <div class="insight">Approval rates vary across banks, creating room for deeper performance analysis.</div>
+  </div>
+</section>
+
+<!-- PERFORMANCE -->
+<section id="performance" class="page">
+  <div class="cards">
+    <div class="card"><div class="label">Average Approval Rate</div><div class="value" id="perfApproval"></div></div>
+    <div class="card"><div class="label">Highest Approval</div><div class="value" id="perfHigh"></div></div>
+    <div class="card"><div class="label">Lowest Approval</div><div class="value" id="perfLow"></div></div>
+    <div class="card"><div class="label">Sample Banks</div><div class="value">3</div></div>
+  </div>
+  <div class="grid2">
+    <div class="panel"><h2>Approval Rate by Bank</h2><div class="chartbox"><canvas id="approvalChart"></canvas></div></div>
+    <div class="panel"><h2>Channel Performance</h2><div class="chartbox"><canvas id="channelChart"></canvas></div></div>
+  </div>
+  <div class="panel"><h2>Bank Performance Detail</h2>
+    <table><thead><tr><th>Bank</th><th>Approval Rate</th><th>Transactions</th><th>Revenue</th></tr></thead><tbody id="performanceTable"></tbody></table>
+  </div>
+</section>
+
+<!-- REVENUE -->
+<section id="revenue" class="page">
+  <div class="cards">
+    <div class="card"><div class="label">Total Revenue</div><div class="value" id="revTotal"></div></div>
+    <div class="card"><div class="label">Revenue / Transaction</div><div class="value" id="revPerTxn"></div></div>
+    <div class="card"><div class="label">Largest Revenue Bank</div><div class="value" id="revBank"></div></div>
+    <div class="card"><div class="label">Revenue Growth</div><div class="value up">+5.7%</div></div>
+  </div>
+  <div class="grid2">
+    <div class="panel"><h2>Revenue by Month</h2><div class="chartbox"><canvas id="revenueLine"></canvas></div></div>
+    <div class="panel"><h2>Revenue by Bank</h2><div class="chartbox"><canvas id="revenueBar"></canvas></div></div>
+  </div>
+  <div class="panel"><h2>Revenue Summary</h2>
+    <table><thead><tr><th>Bank</th><th>Revenue</th><th>Transactions</th><th>Revenue / Txn</th></tr></thead><tbody id="revenueTable"></tbody></table>
+  </div>
+</section>
+
+<!-- TRANSACTIONS -->
+<section id="transactions" class="page">
+  <div class="cards">
+    <div class="card"><div class="label">Total Transactions</div><div class="value" id="txnTotal"></div></div>
+    <div class="card"><div class="label">POS Share</div><div class="value">46%</div></div>
+    <div class="card"><div class="label">E-commerce Share</div><div class="value">34%</div></div>
+    <div class="card"><div class="label">Recurring Share</div><div class="value">8%</div></div>
+  </div>
+  <div class="grid2">
+    <div class="panel"><h2>Transactions by Month</h2><div class="chartbox"><canvas id="txnLine"></canvas></div></div>
+    <div class="panel"><h2>Transaction Channel Mix</h2><div class="chartbox"><canvas id="txnDonut"></canvas></div></div>
+  </div>
+  <div class="panel"><h2>Sample Transaction Records</h2>
+    <table><thead><tr><th>Transaction ID</th><th>Bank</th><th>Channel</th><th>Amount</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>TXN-10001</td><td>Alpha Bank</td><td>POS</td><td>₹2,450</td><td><span class="badge">Approved</span></td></tr>
+      <tr><td>TXN-10002</td><td>Beta Bank</td><td>E-commerce</td><td>₹5,820</td><td><span class="badge">Approved</span></td></tr>
+      <tr><td>TXN-10003</td><td>Gamma Bank</td><td>Recurring</td><td>₹1,299</td><td><span class="badge">Declined</span></td></tr>
+      <tr><td>TXN-10004</td><td>Alpha Bank</td><td>E-commerce</td><td>₹8,750</td><td><span class="badge">Approved</span></td></tr>
+      <tr><td>TXN-10005</td><td>Beta Bank</td><td>POS</td><td>₹3,100</td><td><span class="badge">Approved</span></td></tr>
+    </tbody></table>
+  </div>
+</section>
+
+</main>
+</div>
 
 <script>
+const months=["Jan","Feb","Mar","Apr","May","Jun"];
 
-/* ----------------------------------
-   SAMPLE DATA
----------------------------------- */
-
-const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun"
-];
-
-
-const data = {
-
-    "Alpha Bank": [
-        18,
-        21,
-        23,
-        25,
-        24,
-        28
-    ],
-
-    "Beta Bank": [
-        14,
-        16,
-        18,
-        17,
-        20,
-        22
-    ],
-
-    "Gamma Bank": [
-        10,
-        12,
-        13,
-        15,
-        16,
-        18
-    ]
-
+const volume={
+ "Alpha Bank":[18,21,23,25,24,28],
+ "Beta Bank":[14,16,18,17,20,22],
+ "Gamma Bank":[10,12,13,15,16,18]
 };
 
-
-const stats = {
-
-    "Alpha Bank": {
-        tx: 1.18,
-        rev: 1.72,
-        approval: 93.1
-    },
-
-    "Beta Bank": {
-        tx: 0.91,
-        rev: 1.38,
-        approval: 91.4
-    },
-
-    "Gamma Bank": {
-        tx: 0.75,
-        rev: 1.08,
-        approval: 89.9
-    }
-
+const stats={
+ "Alpha Bank":{tx:1.18,rev:1.72,approval:93.1},
+ "Beta Bank":{tx:.91,rev:1.38,approval:91.4},
+ "Gamma Bank":{tx:.75,rev:1.08,approval:89.9}
 };
 
-
-/* ----------------------------------
-   CHART VARIABLES
----------------------------------- */
-
-let lineChart;
-
-let doughnutChart;
-
-
-/* ----------------------------------
-   RENDER DASHBOARD
----------------------------------- */
-
-function renderDashboard() {
-
-    const selectedBank =
-        document.getElementById("bank").value;
-
-    const selectedMonth =
-        document.getElementById("month").value;
-
-
-    let labels = months;
-
-    let series;
-
-
-    /* ------------------------------
-       TRANSACTION VOLUME
-    ------------------------------ */
-
-    if (selectedBank === "All") {
-
-        series = months.map(
-            (_, i) => {
-
-                return Object
-                    .values(data)
-                    .reduce(
-                        (sum, bankData) =>
-                            sum + bankData[i],
-                        0
-                    );
-
-            }
-        );
-
-    } else {
-
-        series = data[selectedBank].map(
-            value => value
-        );
-
-    }
-
-
-    /* ------------------------------
-       MONTH FILTER
-    ------------------------------ */
-
-    if (selectedMonth !== "All") {
-
-        const index =
-            months.indexOf(selectedMonth);
-
-        labels = [selectedMonth];
-
-        series = [series[index]];
-
-    }
-
-
-    /* ------------------------------
-       KPI VALUES
-    ------------------------------ */
-
-    const totalVolume =
-        series.reduce(
-            (sum, value) => sum + value,
-            0
-        );
-
-
-    document.getElementById("volume")
-        .textContent =
-        "₹" + totalVolume.toFixed(1) + " Cr";
-
-
-    let selectedBanks;
-
-
-    if (selectedBank === "All") {
-
-        selectedBanks =
-            Object.keys(stats);
-
-    } else {
-
-        selectedBanks = [
-            selectedBank
-        ];
-
-    }
-
-
-    let totalTransactions = 0;
-
-    let totalRevenue = 0;
-
-    let totalApproval = 0;
-
-
-    selectedBanks.forEach(bank => {
-
-        totalTransactions +=
-            stats[bank].tx;
-
-        totalRevenue +=
-            stats[bank].rev;
-
-        totalApproval +=
-            stats[bank].approval;
-
-    });
-
-
-    const averageApproval =
-        totalApproval /
-        selectedBanks.length;
-
-
-    document.getElementById("txns")
-        .textContent =
-        totalTransactions.toFixed(2) + "M";
-
-
-    document.getElementById("revenue")
-        .textContent =
-        "₹" +
-        totalRevenue.toFixed(2) +
-        " Cr";
-
-
-    document.getElementById("approval")
-        .textContent =
-        averageApproval.toFixed(1) + "%";
-
-
-    /* ------------------------------
-       LINE CHART
-    ------------------------------ */
-
-    if (lineChart) {
-
-        lineChart.destroy();
-
-    }
-
-
-    lineChart =
-        new Chart(
-
-            document
-                .getElementById("lineChart"),
-
-            {
-
-                type: "line",
-
-                data: {
-
-                    labels: labels,
-
-                    datasets: [
-
-                        {
-
-                            label:
-                                "Volume (₹ Cr)",
-
-                            data: series,
-
-                            borderWidth: 3,
-
-                            tension: 0.35,
-
-                            fill: false
-
-                        }
-
-                    ]
-
-                },
-
-                options: {
-
-                    responsive: true,
-
-                    plugins: {
-
-                        legend: {
-                            display: false
-                        }
-
-                    },
-
-                    scales: {
-
-                        y: {
-
-                            beginAtZero: true
-
-                        }
-
-                    }
-
-                }
-
-            }
-
-        );
-
-
-    /* ------------------------------
-       DOUGHNUT CHART
-    ------------------------------ */
-
-    if (doughnutChart) {
-
-        doughnutChart.destroy();
-
-    }
-
-
-    doughnutChart =
-        new Chart(
-
-            document
-                .getElementById(
-                    "doughnutChart"
-                ),
-
-            {
-
-                type: "doughnut",
-
-                data: {
-
-                    labels: [
-
-                        "POS",
-                        "E-commerce",
-                        "ATM",
-                        "Recurring"
-
-                    ],
-
-                    datasets: [
-
-                        {
-
-                            data: [
-                                46,
-                                34,
-                                12,
-                                8
-                            ]
-
-                        }
-
-                    ]
-
-                },
-
-                options: {
-
-                    responsive: true,
-
-                    plugins: {
-
-                        legend: {
-
-                            position:
-                                "bottom"
-
-                        }
-
-                    }
-
-                }
-
-            }
-
-        );
-
-
-    /* ------------------------------
-       BANK TABLE
-    ------------------------------ */
-
-    const table =
-        document.getElementById(
-            "bankTable"
-        );
-
-
-    table.innerHTML = "";
-
-
-    selectedBanks.forEach(bank => {
-
-        const totalBankVolume =
-            data[bank].reduce(
-                (sum, value) =>
-                    sum + value,
-                0
-            );
-
-
-        const row =
-            document.createElement("tr");
-
-
-        row.innerHTML = `
-
-            <td>
-                <b>${bank}</b>
-            </td>
-
-            <td>
-                ₹${totalBankVolume} Cr
-            </td>
-
-            <td>
-                ${stats[bank].tx.toFixed(2)}M
-            </td>
-
-            <td>
-                ₹${stats[bank].rev.toFixed(2)} Cr
-            </td>
-
-            <td>
-                ${stats[bank].approval}%
-            </td>
-
-        `;
-
-
-        table.appendChild(row);
-
-    });
-
+const channels=["POS","E-commerce","ATM","Recurring"];
+const channelShare=[46,34,12,8];
+let charts={};
+
+function selectedBanks(){
+ const b=document.getElementById("bankFilter").value;
+ return b==="All"?Object.keys(stats):[b];
 }
 
+function filteredSeries(bank){
+ let s=volume[bank].slice();
+ const m=document.getElementById("monthFilter").value;
+ if(m!=="All") return [s[months.indexOf(m)]];
+ return s;
+}
 
-/* ----------------------------------
-   FILTER EVENTS
----------------------------------- */
+function totalVolume(){
+ return selectedBanks().reduce((sum,b)=>sum+filteredSeries(b).reduce((a,v)=>a+v,0),0);
+}
 
-document
-    .getElementById("month")
-    .addEventListener(
-        "change",
-        renderDashboard
-    );
+function totalTx(){
+ const m=document.getElementById("monthFilter").value;
+ if(m==="All") return selectedBanks().reduce((s,b)=>s+stats[b].tx,0);
+ const idx=months.indexOf(m);
+ return selectedBanks().reduce((s,b)=>s+stats[b].tx*(volume[b][idx]/volume[b].reduce((a,v)=>a+v,0)),0);
+}
 
+function totalRev(){
+ return selectedBanks().reduce((s,b)=>s+stats[b].rev,0);
+}
 
-document
-    .getElementById("bank")
-    .addEventListener(
-        "change",
-        renderDashboard
-    );
+function makeChart(id,type,labels,data,label){
+ if(charts[id]) charts[id].destroy();
+ charts[id]=new Chart(document.getElementById(id),{
+  type:type,
+  data:{labels:labels,datasets:[{label:label||"",data:data,borderWidth:3,tension:.35}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:type==="doughnut"}},scales:type==="doughnut"?{}:{y:{beginAtZero:true}}}
+ });
+}
 
+function makeBar(id,labels,data,label){
+ if(charts[id]) charts[id].destroy();
+ charts[id]=new Chart(document.getElementById(id),{
+  type:"bar",data:{labels:labels,datasets:[{label:label||"",data:data,borderWidth:1}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}
+ });
+}
 
-/* ----------------------------------
-   INITIAL LOAD
----------------------------------- */
+function renderAll(){
+ const banks=selectedBanks();
+ const vol=totalVolume();
+ const tx=totalTx();
+ const rev=totalRev();
+ const approval=banks.reduce((s,b)=>s+stats[b].approval,0)/banks.length;
 
-renderDashboard();
+ document.getElementById("ovVolume").textContent="₹"+vol.toFixed(1)+" Cr";
+ document.getElementById("ovTx").textContent=tx.toFixed(2)+"M";
+ document.getElementById("ovRev").textContent="₹"+rev.toFixed(2)+" Cr";
+ document.getElementById("ovApproval").textContent=approval.toFixed(1)+"%";
 
+ let monthly=months.map((_,i)=>banks.reduce((s,b)=>s+volume[b][i],0));
+ makeChart("overviewLine","line",months,monthly,"Volume (₹ Cr)");
+ makeChart("overviewDonut","doughnut",channels,channelShare,"Share");
+
+ const approvals=banks.map(b=>stats[b].approval);
+ document.getElementById("perfApproval").textContent=approval.toFixed(1)+"%";
+ document.getElementById("perfHigh").textContent=Math.max(...approvals).toFixed(1)+"%";
+ document.getElementById("perfLow").textContent=Math.min(...approvals).toFixed(1)+"%";
+ makeBar("approvalChart",banks,approvals,"Approval Rate");
+ makeBar("channelChart",channels,[92,90,96,88],"Approval Rate");
+
+ document.getElementById("performanceTable").innerHTML=banks.map(b=>`
+ <tr><td><b>${b}</b></td><td>${stats[b].approval}%</td><td>${stats[b].tx.toFixed(2)}M</td><td>₹${stats[b].rev.toFixed(2)} Cr</td></tr>`).join("");
+
+ document.getElementById("revTotal").textContent="₹"+rev.toFixed(2)+" Cr";
+ document.getElementById("revPerTxn").textContent="₹"+((rev*100)/(tx*1000000)*1000000).toFixed(0);
+ const largest=banks.reduce((a,b)=>stats[b].rev>stats[a].rev?b:a,banks[0]);
+ document.getElementById("revBank").textContent=largest.replace(" Bank","");
+ const monthlyRev=months.map((_,i)=>banks.reduce((s,b)=>s+stats[b].rev*(volume[b][i]/volume[b].reduce((a,v)=>a+v,0)),0));
+ makeChart("revenueLine","line",months,monthlyRev,"Revenue (₹ Cr)");
+ makeBar("revenueBar",banks,banks.map(b=>stats[b].rev),"Revenue");
+ document.getElementById("revenueTable").innerHTML=banks.map(b=>`
+ <tr><td><b>${b}</b></td><td>₹${stats[b].rev.toFixed(2)} Cr</td><td>${stats[b].tx.toFixed(2)}M</td><td>₹${(stats[b].rev*10000000/(stats[b].tx*1000000)).toFixed(2)}</td></tr>`).join("");
+
+ document.getElementById("txnTotal").textContent=tx.toFixed(2)+"M";
+ const monthlyTx=months.map((_,i)=>banks.reduce((s,b)=>s+stats[b].tx*(volume[b][i]/volume[b].reduce((a,v)=>a+v,0)),0));
+ makeChart("txnLine","line",months,monthlyTx,"Transactions (M)");
+ makeChart("txnDonut","doughnut",channels,channelShare,"Share");
+}
+
+function showPage(page,button){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ document.getElementById(page).classList.add("active");
+ document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
+ button.classList.add("active");
+
+ const titles={
+  overview:["Executive Overview","High-level view of sample payments performance"],
+  performance:["Authorization Performance","Compare sample performance across banks and channels"],
+  revenue:["Revenue Analytics","Explore sample revenue contribution and trends"],
+  transactions:["Transaction Explorer","Explore sample transaction volumes and records"]
+ };
+ document.getElementById("pageTitle").textContent=titles[page][0];
+ document.getElementById("pageSubtitle").textContent=titles[page][1];
+ renderAll();
+}
+
+renderAll();
 </script>
-
 </body>
 </html>
