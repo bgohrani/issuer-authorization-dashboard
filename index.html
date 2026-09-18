@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Payments Dashboard</title>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            color: #172033;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 30px;
+        }
+
+        h1 {
+            margin: 0 0 6px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #687386;
+            margin-bottom: 25px;
+        }
+
+        /* Filters */
+
+        .filters {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        select {
+            padding: 10px 14px;
+            border: 1px solid #d9deea;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+        }
+
+        /* KPI Cards */
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e7eaf0;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(20, 30, 50, 0.04);
+        }
+
+        .label {
+            color: #718096;
+            font-size: 13px;
+        }
+
+        .value {
+            font-size: 26px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .delta {
+            font-size: 12px;
+            margin-top: 7px;
+        }
+
+        .up {
+            color: #159957;
+        }
+
+        .down {
+            color: #d64545;
+        }
+
+        /* Charts */
+
+        .grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .panel {
+            background: white;
+            border: 1px solid #e7eaf0;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(20, 30, 50, 0.04);
+        }
+
+        .panel h2 {
+            font-size: 17px;
+            margin: 0 0 18px;
+        }
+
+        canvas {
+            max-height: 300px;
+        }
+
+        /* Table */
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px 8px;
+            border-bottom: 1px solid #edf0f5;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            color: #718096;
+            font-weight: 600;
+        }
+
+        /* Mobile */
+
+        @media (max-width: 800px) {
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Payments Performance Dashboard</h1>
+
+    <div class="subtitle">
+        Sample payments analytics dashboard
+    </div>
+
+    <!-- FILTERS -->
+
+    <div class="filters">
+
+        <select id="month">
+            <option value="All">All Months</option>
+            <option value="Jan">January</option>
+            <option value="Feb">February</option>
+            <option value="Mar">March</option>
+            <option value="Apr">April</option>
+            <option value="May">May</option>
+            <option value="Jun">June</option>
+        </select>
+
+        <select id="bank">
+            <option value="All">All Banks</option>
+            <option value="Alpha Bank">Alpha Bank</option>
+            <option value="Beta Bank">Beta Bank</option>
+            <option value="Gamma Bank">Gamma Bank</option>
+        </select>
+
+    </div>
+
+
+    <!-- KPI CARDS -->
+
+    <div class="cards">
+
+        <div class="card">
+            <div class="label">
+                Transaction Volume
+            </div>
+
+            <div class="value" id="volume">
+                ₹124.6 Cr
+            </div>
+
+            <div class="delta up">
+                ▲ 8.4% vs prior period
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="label">
+                Transactions
+            </div>
+
+            <div class="value" id="txns">
+                2.84M
+            </div>
+
+            <div class="delta up">
+                ▲ 6.1% vs prior period
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="label">
+                Revenue
+            </div>
+
+            <div class="value" id="revenue">
+                ₹4.18 Cr
+            </div>
+
+            <div class="delta up">
+                ▲ 5.7% vs prior period
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="label">
+                Approval Rate
+            </div>
+
+            <div class="value" id="approval">
+                91.8%
+            </div>
+
+            <div class="delta down">
+                ▼ 0.8 pp vs prior period
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- CHARTS -->
+
+    <div class="grid">
+
+        <div class="panel">
+
+            <h2>
+                Monthly Transaction Volume
+            </h2>
+
+            <canvas id="lineChart"></canvas>
+
+        </div>
+
+
+        <div class="panel">
+
+            <h2>
+                Channel Mix
+            </h2>
+
+            <canvas id="doughnutChart"></canvas>
+
+        </div>
+
+    </div>
+
+
+    <!-- BANK TABLE -->
+
+    <div class="panel">
+
+        <h2>
+            Bank Performance
+        </h2>
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Bank</th>
+                    <th>Volume</th>
+                    <th>Transactions</th>
+                    <th>Revenue</th>
+                    <th>Approval Rate</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="bankTable">
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* ----------------------------------
+   SAMPLE DATA
+---------------------------------- */
+
+const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun"
+];
+
+
+const data = {
+
+    "Alpha Bank": [
+        18,
+        21,
+        23,
+        25,
+        24,
+        28
+    ],
+
+    "Beta Bank": [
+        14,
+        16,
+        18,
+        17,
+        20,
+        22
+    ],
+
+    "Gamma Bank": [
+        10,
+        12,
+        13,
+        15,
+        16,
+        18
+    ]
+
+};
+
+
+const stats = {
+
+    "Alpha Bank": {
+        tx: 1.18,
+        rev: 1.72,
+        approval: 93.1
+    },
+
+    "Beta Bank": {
+        tx: 0.91,
+        rev: 1.38,
+        approval: 91.4
+    },
+
+    "Gamma Bank": {
+        tx: 0.75,
+        rev: 1.08,
+        approval: 89.9
+    }
+
+};
+
+
+/* ----------------------------------
+   CHART VARIABLES
+---------------------------------- */
+
+let lineChart;
+
+let doughnutChart;
+
+
+/* ----------------------------------
+   RENDER DASHBOARD
+---------------------------------- */
+
+function renderDashboard() {
+
+    const selectedBank =
+        document.getElementById("bank").value;
+
+    const selectedMonth =
+        document.getElementById("month").value;
+
+
+    let labels = months;
+
+    let series;
+
+
+    /* ------------------------------
+       TRANSACTION VOLUME
+    ------------------------------ */
+
+    if (selectedBank === "All") {
+
+        series = months.map(
+            (_, i) => {
+
+                return Object
+                    .values(data)
+                    .reduce(
+                        (sum, bankData) =>
+                            sum + bankData[i],
+                        0
+                    );
+
+            }
+        );
+
+    } else {
+
+        series = data[selectedBank].map(
+            value => value
+        );
+
+    }
+
+
+    /* ------------------------------
+       MONTH FILTER
+    ------------------------------ */
+
+    if (selectedMonth !== "All") {
+
+        const index =
+            months.indexOf(selectedMonth);
+
+        labels = [selectedMonth];
+
+        series = [series[index]];
+
+    }
+
+
+    /* ------------------------------
+       KPI VALUES
+    ------------------------------ */
+
+    const totalVolume =
+        series.reduce(
+            (sum, value) => sum + value,
+            0
+        );
+
+
+    document.getElementById("volume")
+        .textContent =
+        "₹" + totalVolume.toFixed(1) + " Cr";
+
+
+    let selectedBanks;
+
+
+    if (selectedBank === "All") {
+
+        selectedBanks =
+            Object.keys(stats);
+
+    } else {
+
+        selectedBanks = [
+            selectedBank
+        ];
+
+    }
+
+
+    let totalTransactions = 0;
+
+    let totalRevenue = 0;
+
+    let totalApproval = 0;
+
+
+    selectedBanks.forEach(bank => {
+
+        totalTransactions +=
+            stats[bank].tx;
+
+        totalRevenue +=
+            stats[bank].rev;
+
+        totalApproval +=
+            stats[bank].approval;
+
+    });
+
+
+    const averageApproval =
+        totalApproval /
+        selectedBanks.length;
+
+
+    document.getElementById("txns")
+        .textContent =
+        totalTransactions.toFixed(2) + "M";
+
+
+    document.getElementById("revenue")
+        .textContent =
+        "₹" +
+        totalRevenue.toFixed(2) +
+        " Cr";
+
+
+    document.getElementById("approval")
+        .textContent =
+        averageApproval.toFixed(1) + "%";
+
+
+    /* ------------------------------
+       LINE CHART
+    ------------------------------ */
+
+    if (lineChart) {
+
+        lineChart.destroy();
+
+    }
+
+
+    lineChart =
+        new Chart(
+
+            document
+                .getElementById("lineChart"),
+
+            {
+
+                type: "line",
+
+                data: {
+
+                    labels: labels,
+
+                    datasets: [
+
+                        {
+
+                            label:
+                                "Volume (₹ Cr)",
+
+                            data: series,
+
+                            borderWidth: 3,
+
+                            tension: 0.35,
+
+                            fill: false
+
+                        }
+
+                    ]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    plugins: {
+
+                        legend: {
+                            display: false
+                        }
+
+                    },
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        );
+
+
+    /* ------------------------------
+       DOUGHNUT CHART
+    ------------------------------ */
+
+    if (doughnutChart) {
+
+        doughnutChart.destroy();
+
+    }
+
+
+    doughnutChart =
+        new Chart(
+
+            document
+                .getElementById(
+                    "doughnutChart"
+                ),
+
+            {
+
+                type: "doughnut",
+
+                data: {
+
+                    labels: [
+
+                        "POS",
+                        "E-commerce",
+                        "ATM",
+                        "Recurring"
+
+                    ],
+
+                    datasets: [
+
+                        {
+
+                            data: [
+                                46,
+                                34,
+                                12,
+                                8
+                            ]
+
+                        }
+
+                    ]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    plugins: {
+
+                        legend: {
+
+                            position:
+                                "bottom"
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        );
+
+
+    /* ------------------------------
+       BANK TABLE
+    ------------------------------ */
+
+    const table =
+        document.getElementById(
+            "bankTable"
+        );
+
+
+    table.innerHTML = "";
+
+
+    selectedBanks.forEach(bank => {
+
+        const totalBankVolume =
+            data[bank].reduce(
+                (sum, value) =>
+                    sum + value,
+                0
+            );
+
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML = `
+
+            <td>
+                <b>${bank}</b>
+            </td>
+
+            <td>
+                ₹${totalBankVolume} Cr
+            </td>
+
+            <td>
+                ${stats[bank].tx.toFixed(2)}M
+            </td>
+
+            <td>
+                ₹${stats[bank].rev.toFixed(2)} Cr
+            </td>
+
+            <td>
+                ${stats[bank].approval}%
+            </td>
+
+        `;
+
+
+        table.appendChild(row);
+
+    });
+
+}
+
+
+/* ----------------------------------
+   FILTER EVENTS
+---------------------------------- */
+
+document
+    .getElementById("month")
+    .addEventListener(
+        "change",
+        renderDashboard
+    );
+
+
+document
+    .getElementById("bank")
+    .addEventListener(
+        "change",
+        renderDashboard
+    );
+
+
+/* ----------------------------------
+   INITIAL LOAD
+---------------------------------- */
+
+renderDashboard();
+
+</script>
+
+</body>
+</html>
