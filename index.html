@@ -31,6 +31,18 @@ select{padding:9px 12px;border:1px solid #d9deea;border-radius:8px;background:wh
 table{width:100%;border-collapse:collapse}th,td{padding:12px 8px;border-bottom:1px solid #edf0f5;text-align:left;font-size:14px}th{color:#718096;font-weight:600}
 .badge{padding:5px 9px;border-radius:20px;background:#eef2f7;font-size:12px}
 .insight{padding:13px;border-left:3px solid #5b6f95;background:#f7f9fc;margin-bottom:10px;font-size:14px}
+
+.ai-controls{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.ai-box{background:#fff;border:1px solid #e6eaf0;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(20,30,50,.04)}
+.ai-box label{display:block;color:#718096;font-size:13px;margin-bottom:7px}
+.ai-box select{width:100%;padding:11px 12px}
+.ai-button{border:0;border-radius:8px;padding:11px 18px;background:#172033;color:#fff;font-weight:600;cursor:pointer}
+.ai-button:hover{background:#2b3850}.ai-button:disabled{opacity:.55;cursor:not-allowed}
+.ai-status{color:#687386;font-size:13px;margin-left:10px}
+.ai-result{line-height:1.65;font-size:14px;white-space:pre-wrap}
+.ai-meta{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}
+.ai-pill{background:#eef2f7;border-radius:20px;padding:6px 10px;font-size:12px}
+@media(max-width:800px){.ai-controls{grid-template-columns:1fr}}
 @media(max-width:900px){.sidebar{width:180px}.main{margin-left:180px}.cards{grid-template-columns:repeat(2,1fr)}.grid2,.grid3{grid-template-columns:1fr}}
 @media(max-width:650px){.sidebar{position:static;width:100%;min-height:auto}.app{display:block}.main{margin-left:0}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap}.header{display:block}.filters{margin-top:15px}}
 </style>
@@ -46,6 +58,7 @@ table{width:100%;border-collapse:collapse}th,td{padding:12px 8px;border-bottom:1
     <button onclick="showPage('performance',this)">Performance</button>
     <button onclick="showPage('revenue',this)">Revenue</button>
     <button onclick="showPage('transactions',this)">Transactions</button>
+    <button onclick="showPage('ai',this)">🤖 AI Insights</button>
   </div>
 </aside>
 
@@ -149,6 +162,38 @@ table{width:100%;border-collapse:collapse}th,td{padding:12px 8px;border-bottom:1
   </div>
 </section>
 
+<!-- AI INSIGHTS -->
+<section id="ai" class="page">
+  <div class="ai-box" style="margin-bottom:18px">
+    <h2 style="margin:0 0 8px;font-size:20px">🤖 AI Insights</h2>
+    <div class="subtitle" style="margin-bottom:18px">Analyze the numbers currently selected in the dashboard using a free-tier AI model.</div>
+    <div class="ai-meta">
+      <span class="ai-pill" id="aiBankPill">Bank: All Banks</span>
+      <span class="ai-pill" id="aiMonthPill">Month: All Months</span>
+    </div>
+    <div class="ai-controls">
+      <div>
+        <label for="aiProvider">AI Provider / Model</label>
+        <select id="aiProvider">
+          <option value="gemini">Google Gemini — 2.5 Flash-Lite (free tier)</option>
+          <option value="groq">Groq — GPT-OSS 20B (free-tier access)</option>
+          <option value="openrouter">OpenRouter — Free Models Router</option>
+        </select>
+      </div>
+      <div>
+        <label>Action</label>
+        <button class="ai-button" id="generateAiBtn" onclick="generateAIInsights()">✨ Generate Insights</button>
+        <span class="ai-status" id="aiStatus">Ready</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ai-box">
+    <h2 style="margin:0 0 16px;font-size:17px">Analysis</h2>
+    <div id="aiResult" class="ai-result">Select your filters and click <b>Generate Insights</b>. The AI will receive the filtered dashboard metrics and analyze only those numbers.</div>
+  </div>
+</section>
+
 </main>
 </div>
 
@@ -214,8 +259,9 @@ function makeBar(id,labels,data,label){
   options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}
  });
 }
-
+\n\n// Change this after deploying the Cloudflare Worker. Example:\n// const AI_API_URL = "https://your-worker.your-subdomain.workers.dev";\nconst AI_API_URL = "YOUR_CLOUDFLARE_WORKER_URL";\n\nfunction buildAIContext(){\n  const banks=selectedBanks();\n  const bank=document.getElementById("bankFilter").value;\n  const month=document.getElementById("monthFilter").value;\n  const vol=totalVolume();\n  const tx=totalTx();\n  const rev=totalRev();\n  const approval=banks.reduce((s,b)=>s+stats[b].approval,0)/banks.length;\n  const monthlyVolume=months.map((m,i)=>({month:m,volumeCr:+banks.reduce((s,b)=>s+volume[b][i],0).toFixed(2)}));\n  const bankDetails=banks.map(b=>({bank:b,volumeCr:+volume[b].reduce((a,v)=>a+v,0).toFixed(2),transactionsM:stats[b].tx,revenueCr:stats[b].rev,approvalRate:stats[b].approval}));\n  return {filters:{bank,month},kpis:{transactionVolumeCr:+vol.toFixed(2),transactionsM:+tx.toFixed(3),revenueCr:+rev.toFixed(3),approvalRate:+approval.toFixed(2)},monthlyVolume,bankDetails,channelMix:{POS:46,ecommerce:34,ATM:12,recurring:8},channelApprovalRates:{POS:92,ecommerce:90,ATM:96,recurring:88}};\n}\n\nfunction updateAIPills(){\n  document.getElementById("aiBankPill").textContent="Bank: "+document.getElementById("bankFilter").value;\n  document.getElementById("aiMonthPill").textContent="Month: "+document.getElementById("monthFilter").value;\n}\n\nasync function generateAIInsights(){\n  updateAIPills();\n  const btn=document.getElementById("generateAiBtn");\n  const status=document.getElementById("aiStatus");\n  const result=document.getElementById("aiResult");\n  const provider=document.getElementById("aiProvider").value;\n  if(AI_API_URL==="YOUR_CLOUDFLARE_WORKER_URL"){\n    result.innerHTML="<b>Almost ready.</b> Deploy the supplied Cloudflare Worker, then replace <code>YOUR_CLOUDFLARE_WORKER_URL</code> in index.html with your Worker URL.";\n    status.textContent="Backend not connected";\n    return;\n  }\n  btn.disabled=true; status.textContent="Analyzing…"; result.textContent="Generating insights from the selected dashboard data…";\n  try{\n    const response=await fetch(AI_API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({provider,data:buildAIContext()})});\n    const payload=await response.json();\n    if(!response.ok) throw new Error(payload.error||"AI request failed");\n    result.textContent=payload.text||"No insight returned.";\n    status.textContent="Generated";\n  }catch(err){\n    result.innerHTML="<b>Could not generate insights.</b>\\n\\n"+err.message+"\\n\\nCheck that your Worker URL and provider API key are configured.";\n    status.textContent="Error";\n  }finally{btn.disabled=false;}\n}\n
 function renderAll(){
+ updateAIPills();
  const banks=selectedBanks();
  const vol=totalVolume();
  const tx=totalTx();
