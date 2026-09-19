@@ -15,20 +15,72 @@ body{margin:0;font-family:Arial,sans-serif;background:#f4f6fa;color:#172033}
 .logo span{display:block;color:#aeb9ca;font-size:12px;font-weight:400;margin-top:5px}
 .nav button{width:100%;border:0;background:transparent;color:#c9d2df;text-align:left;padding:12px;border-radius:8px;margin-bottom:5px;cursor:pointer;font-size:14px}
 .nav button:hover,.nav button.active{background:#2b3850;color:white}
-.main{margin-left:220px;flex:1;padding:30px;max-width:1400px}
+.main{margin-left:220px;margin-right:370px;flex:1;padding:30px;max-width:none}
+.dashboard-layout{display:block}.content-area{min-width:0}
+.ai-panel{position:fixed;top:0;right:0;bottom:0;width:350px;background:#eaf6ff;border-left:1px solid #c9e7f8;padding:18px;z-index:20;overflow-y:auto;box-shadow:-3px 0 14px rgba(30,90,130,.07)}.ai-response{
+  flex:1;
+  min-height:0;
+  max-height:none;
+  margin-top:12px;
+  background:#e6f2ff;
+  border:1px solid #d4e8fa;
+  border-radius:11px;
+  padding:18px 17px;
+  overflow:auto;
+  color:#07529a;
+  font-size:13px;
+  line-height:1.65;
+}
+.ai-response .ai-summary-title{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  color:#1f2430;
+  font-size:16px;
+  font-weight:700;
+  margin:0 0 16px;
+}
+.ai-response ul{
+  margin:0;
+  padding-left:20px;
+  list-style:disc;
+}
+.ai-response li{
+  margin:0 0 17px;
+  padding-left:3px;
+  color:#07529a;
+}
+.ai-response li:last-child{margin-bottom:0}
+.ai-response .ai-label{
+  font-weight:700;
+  color:#004a8f;
+}
+.ai-response .ai-section-title{
+  font-weight:700;
+  color:#004a8f;
+  margin:0 0 9px;
+}
+.ai-response .ai-section{
+  margin-bottom:19px;
+}
+.ai-empty{
+  color:#5f7890;
+  line-height:1.6;
+}
+.ai-response strong{font-weight:700}.ai-head{display:flex;align-items:center;gap:9px;margin-bottom:15px}.ai-icon{width:32px;height:32px;border-radius:9px;background:#cdeeff;display:flex;align-items:center;justify-content:center;font-size:16px}.ai-title h2{margin:0;font-size:17px}.ai-title p{margin:3px 0 0;color:#668095;font-size:11px}.ai-model label{display:block;color:#5d7487;font-size:11px;font-weight:600;margin-bottom:6px}.ai-model select{width:100%;padding:9px 10px;font-size:12px;border-color:#c8dfed;background:rgba(255,255,255,.9)}.ai-generate{width:100%;margin-top:11px;border:0;border-radius:8px;background:#1677c8;color:white;padding:10px 12px;font-weight:600;cursor:pointer}.ai-generate:hover{background:#0f66ae}.ai-generate:disabled{opacity:.6;cursor:wait}.ai-generate.stop-generating{background:#d64545!important;opacity:1;cursor:pointer}.ai-generate.stop-generating:hover{background:#b93434!important}.ai-context{margin-top:13px;background:rgba(255,255,255,.68);border:1px solid #d5eaf5;border-radius:9px;padding:9px 10px;color:#5f7687;font-size:11px;line-height:1.5}.ai-response ul{margin:0;padding-left:20px}.ai-response li{margin:0 0 14px;padding-left:3px}.ai-response .ai-label{font-weight:700;color:#173f5a}.ai-response .ai-section-title{font-weight:700;color:#174b70;margin:0 0 7px}.ai-response .ai-section{margin-bottom:18px}.ai-empty{color:#718096;line-height:1.6}.ai-response{margin-top:12px;background:rgba(255,255,255,.9);border:1px solid #d5eaf5;border-radius:10px;padding:13px;min-height:230px;max-height:calc(100vh - 310px);overflow:auto;white-space:pre-wrap;line-height:1.55;font-size:12.5px;color:#273d4c}.ai-status{font-size:10px;color:#688196;margin-top:8px;min-height:15px}
 .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px}
 h1{margin:0 0 6px;font-size:28px}
 .subtitle{color:#687386;font-size:14px}
 .filters{display:flex;gap:10px}
 select{padding:9px 12px;border:1px solid #d9deea;border-radius:8px;background:white}
 .page{display:none}.page.active{display:block}
-.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:18px}
-.card,.panel{background:white;border:1px solid #e6eaf0;border-radius:12px;padding:19px;box-shadow:0 2px 8px rgba(20,30,50,.04)}
-.label{color:#718096;font-size:13px}.value{font-size:25px;font-weight:700;margin-top:8px}.delta{font-size:12px;margin-top:7px}.up{color:#159957}.down{color:#d64545}
-.grid2{display:grid;grid-template-columns:2fr 1fr;gap:15px;margin-bottom:18px}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:18px}
-.panel{margin-bottom:18px}.panel h2{font-size:17px;margin:0 0 17px}.chartbox{height:300px}
-table{width:100%;border-collapse:collapse}th,td{padding:12px 8px;border-bottom:1px solid #edf0f5;text-align:left;font-size:14px}th{color:#718096;font-weight:600}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.card,.panel{background:white;border:1px solid #e6eaf0;border-radius:10px;padding:14px;box-shadow:0 2px 8px rgba(20,30,50,.04)}
+.label{color:#718096;font-size:13px}.value{font-size:22px;font-weight:700;margin-top:8px}.delta{font-size:12px;margin-top:7px}.up{color:#159957}.down{color:#d64545}
+.grid2{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:14px;min-width:0}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.panel{margin-bottom:14px;min-width:0}.panel h2{font-size:15px;margin:0 0 12px}.chartbox{height:235px}
+table{width:100%;border-collapse:collapse}th,td{padding:9px 7px;border-bottom:1px solid #edf0f5;text-align:left;font-size:12px}th{color:#718096;font-weight:600}
 .badge{padding:5px 9px;border-radius:20px;background:#eef2f7;font-size:12px}
 .insight{padding:13px;border-left:3px solid #5b6f95;background:#f7f9fc;margin-bottom:10px;font-size:14px}
 
@@ -39,12 +91,36 @@ table{width:100%;border-collapse:collapse}th,td{padding:12px 8px;border-bottom:1
 .ai-button{border:0;border-radius:8px;padding:11px 18px;background:#172033;color:#fff;font-weight:600;cursor:pointer}
 .ai-button:hover{background:#2b3850}.ai-button:disabled{opacity:.55;cursor:not-allowed}
 .ai-status{color:#687386;font-size:13px;margin-left:10px}
-.ai-result{line-height:1.65;font-size:14px;white-space:pre-wrap}
+.ai-result{line-height:1.6;font-size:13px;color:#263849}
+.ai-result .ai-section{margin:0 0 14px}
+.ai-result .ai-section-title{font-size:13px;font-weight:700;color:#174b70;margin:0 0 6px}
+.ai-result ul{margin:0;padding-left:19px;list-style:disc}
+.ai-result li{margin:0 0 7px}
+.ai-result .ai-label{font-weight:700;color:#183f5a}
+.ai-result .ai-paragraph{margin:0 0 8px}
 .ai-meta{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}
 .ai-pill{background:#eef2f7;border-radius:20px;padding:6px 10px;font-size:12px}
 @media(max-width:800px){.ai-controls{grid-template-columns:1fr}}
-@media(max-width:900px){.sidebar{width:180px}.main{margin-left:180px}.cards{grid-template-columns:repeat(2,1fr)}.grid2,.grid3{grid-template-columns:1fr}}
-@media(max-width:650px){.sidebar{position:static;width:100%;min-height:auto}.app{display:block}.main{margin-left:0}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap}.header{display:block}.filters{margin-top:15px}}
+@media(max-width:1100px){.main{margin-right:320px}.ai-panel{width:320px}}
+@media(max-width:900px){.sidebar{width:180px}.main{margin-left:180px;margin-right:0}.cards{grid-template-columns:repeat(2,1fr)}.grid2,.grid3{grid-template-columns:1fr}.dashboard-layout{display:block}.ai-panel{position:static;width:auto;height:auto;min-height:500px;border-radius:14px;border:1px solid #c9e6f8;margin-top:20px}.ai-response ul{margin:0;padding-left:20px}.ai-response li{margin:0 0 14px;padding-left:3px}.ai-response .ai-label{font-weight:700;color:#173f5a}.ai-response .ai-section-title{font-weight:700;color:#174b70;margin:0 0 7px}.ai-response .ai-section{margin-bottom:18px}.ai-empty{color:#718096;line-height:1.6}.ai-response{min-height:300px}}
+@media(max-width:650px){.sidebar{position:static;width:100%;min-height:auto}.app{display:block}.main{margin-left:0;margin-right:0;padding:20px}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap}.header{display:block}.filters{margin-top:15px}.ai-panel{margin-top:18px;min-height:480px}.ai-response ul{margin:0;padding-left:20px}.ai-response li{margin:0 0 14px;padding-left:3px}.ai-response .ai-label{font-weight:700;color:#173f5a}.ai-response .ai-section-title{font-weight:700;color:#174b70;margin:0 0 7px}.ai-response .ai-section{margin-bottom:18px}.ai-empty{color:#718096;line-height:1.6}.ai-response{min-height:280px}}
+
+@media(max-width:650px){
+  .main{margin-right:0;padding:15px}
+  .ai-panel{
+    position:static;
+    width:100%;
+    min-height:420px;
+    max-height:none;
+    border-left:0;
+    border-top:1px solid #c9e7f8;
+    margin-top:18px;
+    box-shadow:none;
+  }
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .chartbox{height:210px}
+}
+
 </style>
 </head>
 
@@ -58,7 +134,6 @@ table{width:100%;border-collapse:collapse}th,td{padding:12px 8px;border-bottom:1
     <button onclick="showPage('performance',this)">Performance</button>
     <button onclick="showPage('revenue',this)">Revenue</button>
     <button onclick="showPage('transactions',this)">Transactions</button>
-    <button onclick="showPage('ai',this)">🤖 AI Insights</button>
   </div>
 </aside>
 
@@ -85,6 +160,9 @@ table{width:100%;border-collapse:collapse}th,td{padding:12px 8px;border-bottom:1
   </div>
 </div>
 
+<div class="dashboard-layout">
+<div class="content-area">
+
 <!-- OVERVIEW -->
 <section id="overview" class="page active">
   <div class="cards">
@@ -96,11 +174,6 @@ table{width:100%;border-collapse:collapse}th,td{padding:12px 8px;border-bottom:1
   <div class="grid2">
     <div class="panel"><h2>Monthly Transaction Volume</h2><div class="chartbox"><canvas id="overviewLine"></canvas></div></div>
     <div class="panel"><h2>Channel Mix</h2><div class="chartbox"><canvas id="overviewDonut"></canvas></div></div>
-  </div>
-  <div class="panel"><h2>Quick Insights</h2>
-    <div class="insight">Alpha Bank contributes the largest share of sample transaction volume.</div>
-    <div class="insight">E-commerce represents a significant portion of the sample transaction mix.</div>
-    <div class="insight">Approval rates vary across banks, creating room for deeper performance analysis.</div>
   </div>
 </section>
 
@@ -162,37 +235,30 @@ table{width:100%;border-collapse:collapse}th,td{padding:12px 8px;border-bottom:1
   </div>
 </section>
 
-<!-- AI INSIGHTS -->
-<section id="ai" class="page">
-  <div class="ai-box" style="margin-bottom:18px">
-    <h2 style="margin:0 0 8px;font-size:20px">🤖 AI Insights</h2>
-    <div class="subtitle" style="margin-bottom:18px">Analyze the numbers currently selected in the dashboard using a free-tier AI model.</div>
-    <div class="ai-meta">
-      <span class="ai-pill" id="aiBankPill">Bank: All Banks</span>
-      <span class="ai-pill" id="aiMonthPill">Month: All Months</span>
-    </div>
-    <div class="ai-controls">
-      <div>
-        <label for="aiProvider">AI Provider / Model</label>
-        <select id="aiProvider">
-          <option value="gemini">Google Gemini — 2.5 Flash-Lite (free tier)</option>
-          <option value="groq">Groq — GPT-OSS 20B (free-tier access)</option>
-          <option value="openrouter">OpenRouter — Free Models Router</option>
-        </select>
-      </div>
-      <div>
-        <label>Action</label>
-        <button class="ai-button" id="generateAiBtn" onclick="generateAIInsights()">✨ Generate Insights</button>
-        <span class="ai-status" id="aiStatus">Ready</span>
-      </div>
-    </div>
-  </div>
+</div>
 
-  <div class="ai-box">
-    <h2 style="margin:0 0 16px;font-size:17px">Analysis</h2>
-    <div id="aiResult" class="ai-result">Select your filters and click <b>Generate Insights</b>. The AI will receive the filtered dashboard metrics and analyze only those numbers.</div>
+<aside class="ai-panel">
+  <div class="ai-head">
+    <div class="ai-icon">✦</div>
+    <div class="ai-title">
+      <h2>AI Insights</h2>
+      <p>Analyze the current dashboard selection</p>
+    </div>
   </div>
-</section>
+  <div class="ai-model">
+    <label for="aiModel">Model</label>
+    <select id="aiModel">
+      <option value="gemini|gemini-2.5-flash-lite">Gemini 2.5 Flash-Lite</option>
+      <option value="groq|openai/gpt-oss-20b">GPT-OSS 20B</option>
+      <option value="openrouter|openrouter/free">OpenRouter</option>
+    </select>
+  </div>
+  <button class="ai-generate" id="generateAiBtn" onclick="generateAIInsights()">Generate</button>
+  <div class="ai-status" id="aiStatus"></div>
+  <div class="ai-context" id="aiContext"><b>Current filter:</b> All Banks · All Months</div>
+  <div class="ai-response" id="aiResult">Select your filters and click <b>Generate</b> to get insights based on the numbers currently shown in the dashboard.</div>
+</aside>
+</div>
 
 </main>
 </div>
@@ -215,6 +281,7 @@ const stats={
 const channels=["POS","E-commerce","ATM","Recurring"];
 const channelShare=[46,34,12,8];
 let charts={};
+let aiAbortController=null;
 
 function selectedBanks(){
  const b=document.getElementById("bankFilter").value;
@@ -259,9 +326,167 @@ function makeBar(id,labels,data,label){
   options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}
  });
 }
-\n\n// Change this after deploying the Cloudflare Worker. Example:\n// const AI_API_URL = "https://your-worker.your-subdomain.workers.dev";\nconst AI_API_URL = "YOUR_CLOUDFLARE_WORKER_URL";\n\nfunction buildAIContext(){\n  const banks=selectedBanks();\n  const bank=document.getElementById("bankFilter").value;\n  const month=document.getElementById("monthFilter").value;\n  const vol=totalVolume();\n  const tx=totalTx();\n  const rev=totalRev();\n  const approval=banks.reduce((s,b)=>s+stats[b].approval,0)/banks.length;\n  const monthlyVolume=months.map((m,i)=>({month:m,volumeCr:+banks.reduce((s,b)=>s+volume[b][i],0).toFixed(2)}));\n  const bankDetails=banks.map(b=>({bank:b,volumeCr:+volume[b].reduce((a,v)=>a+v,0).toFixed(2),transactionsM:stats[b].tx,revenueCr:stats[b].rev,approvalRate:stats[b].approval}));\n  return {filters:{bank,month},kpis:{transactionVolumeCr:+vol.toFixed(2),transactionsM:+tx.toFixed(3),revenueCr:+rev.toFixed(3),approvalRate:+approval.toFixed(2)},monthlyVolume,bankDetails,channelMix:{POS:46,ecommerce:34,ATM:12,recurring:8},channelApprovalRates:{POS:92,ecommerce:90,ATM:96,recurring:88}};\n}\n\nfunction updateAIPills(){\n  document.getElementById("aiBankPill").textContent="Bank: "+document.getElementById("bankFilter").value;\n  document.getElementById("aiMonthPill").textContent="Month: "+document.getElementById("monthFilter").value;\n}\n\nasync function generateAIInsights(){\n  updateAIPills();\n  const btn=document.getElementById("generateAiBtn");\n  const status=document.getElementById("aiStatus");\n  const result=document.getElementById("aiResult");\n  const provider=document.getElementById("aiProvider").value;\n  if(AI_API_URL==="YOUR_CLOUDFLARE_WORKER_URL"){\n    result.innerHTML="<b>Almost ready.</b> Deploy the supplied Cloudflare Worker, then replace <code>YOUR_CLOUDFLARE_WORKER_URL</code> in index.html with your Worker URL.";\n    status.textContent="Backend not connected";\n    return;\n  }\n  btn.disabled=true; status.textContent="Analyzing…"; result.textContent="Generating insights from the selected dashboard data…";\n  try{\n    const response=await fetch(AI_API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({provider,data:buildAIContext()})});\n    const payload=await response.json();\n    if(!response.ok) throw new Error(payload.error||"AI request failed");\n    result.textContent=payload.text||"No insight returned.";\n    status.textContent="Generated";\n  }catch(err){\n    result.innerHTML="<b>Could not generate insights.</b>\\n\\n"+err.message+"\\n\\nCheck that your Worker URL and provider API key are configured.";\n    status.textContent="Error";\n  }finally{btn.disabled=false;}\n}\n
+
+
+const AI_API_URL = "https://payments-ai-insights.bgohrani.workers.dev/";
+
+function buildAIContext(){
+  const banks=selectedBanks();
+  const bank=document.getElementById("bankFilter").value;
+  const month=document.getElementById("monthFilter").value;
+  const vol=totalVolume();
+  const tx=totalTx();
+  const rev=totalRev();
+  const approval=banks.reduce((s,b)=>s+stats[b].approval,0)/banks.length;
+  const monthlyVolume=months.map((m,i)=>({month:m,volumeCr:+banks.reduce((s,b)=>s+volume[b][i],0).toFixed(2)}));
+  const bankDetails=banks.map(b=>({bank:b,volumeCr:+filteredSeries(b).reduce((a,v)=>a+v,0).toFixed(2),transactionsM:stats[b].tx,revenueCr:stats[b].rev,approvalRate:stats[b].approval}));
+  return {filters:{bank,month},kpis:{transactionVolumeCr:+vol.toFixed(2),transactionsM:+tx.toFixed(3),revenueCr:+rev.toFixed(3),approvalRate:+approval.toFixed(2)},monthlyVolume,bankDetails,channelMix:{POS:46,ecommerce:34,ATM:12,recurring:8},channelApprovalRates:{POS:92,ecommerce:90,ATM:96,recurring:88}};
+}
+
+function updateAIContext(){
+  const bank=document.getElementById("bankFilter").value;
+  const month=document.getElementById("monthFilter").value;
+  const data=buildAIContext();
+  document.getElementById("aiContext").innerHTML="<b>Current filter:</b> "+(bank==="All"?"All Banks":bank)+" · "+(month==="All"?"All Months":month)+"<br>Volume: "+data.kpis.transactionVolumeCr.toFixed(1)+" Cr · Revenue: "+data.kpis.revenueCr.toFixed(2)+" Cr · Approval: "+data.kpis.approvalRate.toFixed(1)+"%";
+}
+
+
+function escapeAIHtml(text){
+  return text
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+function formatAIInsights(raw){
+  if(!raw) return "<div class='ai-empty'>No insights returned.</div>";
+
+  let text = String(raw)
+    .replace(/\r/g,"")
+    .replace(/\*\*(.*?)\*\*/g,"$1")
+    .replace(/__(.*?)__/g,"$1")
+    .replace(/^#{1,6}\s*/gm,"")
+    .trim();
+
+  const lines = text.split("\n")
+    .map(x => x.trim())
+    .filter(Boolean)
+    .filter(x => !/^✨?\s*AI Diagnostic Summary\s*:?[\s]*$/i.test(x));
+
+  let bullets = [];
+
+  function escapeText(value){
+    return escapeAIHtml(value);
+  }
+
+  function formatBullet(value){
+    value = value.replace(/^(?:[-•*]|\d+[.)])\s+/,"").trim();
+
+    // Bold a natural title when the AI gives "Title: explanation".
+    const colonMatch = value.match(/^(.{1,85}?):\s+(.+)$/);
+    if(colonMatch){
+      return `<strong class="ai-label">${escapeText(colonMatch[1])}:</strong> ${escapeText(colonMatch[2])}`;
+    }
+
+    // Otherwise bold the first few meaningful words.
+    const words = value.split(/\s+/);
+    if(words.length >= 6){
+      const lead = words.slice(0,4).join(" ");
+      const rest = words.slice(4).join(" ");
+      return `<strong class="ai-label">${escapeText(lead)}</strong> ${escapeText(rest)}`;
+    }
+
+    return escapeText(value);
+  }
+
+  for(const line of lines){
+    const isHeader = /^(EXECUTIVE SUMMARY|KEY FINDINGS|AREAS TO INVESTIGATE|SUMMARY|KEY FINDING[S]?|RECOMMENDATIONS?)\s*:?\s*$/i.test(line);
+
+    // Ignore markdown-style section headers; the visual title below is enough.
+    if(isHeader) continue;
+
+    // If a header has text after it, keep the text as a bullet.
+    const headerWithText = line.match(/^(EXECUTIVE SUMMARY|KEY FINDINGS|AREAS TO INVESTIGATE|SUMMARY|KEY FINDING[S]?|RECOMMENDATIONS?)\s*:\s*(.+)$/i);
+    if(headerWithText){
+      bullets.push(headerWithText[2]);
+      continue;
+    }
+
+    bullets.push(line);
+  }
+
+  if(!bullets.length){
+    return "<div class='ai-empty'>No insights returned.</div>";
+  }
+
+  return `
+    
+    <ul>
+      ${bullets.map(item => `<li>${formatBullet(item)}</li>`).join("")}
+    </ul>
+  `;
+}
+
+
+
+function stopAIInsights(){
+  if(aiAbortController) aiAbortController.abort();
+}
+
+async function generateAIInsights(){
+  const btn=document.getElementById("generateAiBtn");
+  const status=document.getElementById("aiStatus");
+  const result=document.getElementById("aiResult");
+  const [provider,model]=document.getElementById("aiModel").value.split("|");
+
+  aiAbortController=new AbortController();
+
+  btn.classList.add("stop-generating");
+  btn.textContent="Stop generating";
+  btn.onclick=stopAIInsights;
+  status.textContent="Analyzing selected dashboard data…";
+  result.innerHTML="<div class='ai-empty'>Generating insights…</div>";
+
+  try{
+    const response=await fetch(AI_API_URL,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        provider,
+        model,
+        dashboardData:buildAIContext()
+      }),
+      signal:aiAbortController.signal
+    });
+
+    const payload=await response.json();
+
+    if(!response.ok || !payload.success){
+      throw new Error(payload.error||"AI request failed");
+    }
+
+    result.innerHTML=formatAIInsights(payload.insights||"No insight returned.");
+    status.textContent="Generated";
+  }catch(err){
+    if(err.name==="AbortError"){
+      result.innerHTML="<div class='ai-empty'>Generation stopped.</div>";
+      status.textContent="Stopped";
+    }else{
+      result.innerHTML=`<div class='ai-empty'><strong>Could not generate insights.</strong><br><br>${escapeAIHtml(err.message)}</div>`;
+      status.textContent="Request failed";
+    }
+  }finally{
+    aiAbortController=null;
+    btn.classList.remove("stop-generating");
+    btn.textContent="Generate";
+    btn.onclick=generateAIInsights;
+  }
+}
+
 function renderAll(){
- updateAIPills();
+ updateAIContext();
  const banks=selectedBanks();
  const vol=totalVolume();
  const tx=totalTx();
